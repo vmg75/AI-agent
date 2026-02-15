@@ -45,10 +45,10 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
-# Agent runtime data (optional: remove if you want to track memory)
+# Agent runtime data
 agent/memory/conversation.jsonl
 agent/memory/memory.json
+agent/workspace/
 
-# Keep directory structure
+# Keep memory dir in repo
 !agent/memory/.gitkeep
-!agent/workspace/.gitkeep
