@@ -3,7 +3,7 @@
 """
 
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 from agent.config import (
     CONVERSATION_FILE,
@@ -22,7 +22,7 @@ def append_message(role: str, content: str) -> None:
     line = json.dumps({
         "role": role,
         "content": content,
-        "ts": datetime.utcnow().isoformat() + "Z",
+        "ts": datetime.now(timezone.utc).isoformat(),
     }, ensure_ascii=False) + "\n"
     CONVERSATION_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(CONVERSATION_FILE, "a", encoding="utf-8") as f:
@@ -79,7 +79,7 @@ def update_memory(
         "summary": summary,
         "facts": facts,
         "todos": todos,
-        "updated_at": datetime.utcnow().isoformat() + "Z",
+        "updated_at": datetime.now(timezone.utc).isoformat(),
     }
     with open(MEMORY_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)

@@ -45,15 +45,18 @@ def is_safe_url(url: str) -> bool:
         if hostname.startswith("169.254."):
             return False
 
-        # проверка IP
-        ip = ipaddress.ip_address(hostname)
-        if ip.is_private:
-            return False
-        if ip.is_loopback:
-            return False
-        if ip.is_link_local:
-            return False
-
+        # Проверка IP — только если hostname является IP-адресом
+        try:
+            ip = ipaddress.ip_address(hostname)
+            if ip.is_private:
+                return False
+            if ip.is_loopback:
+                return False
+            if ip.is_link_local:
+                return False
+        except (ValueError, ipaddress.AddressValueError):
+            # Не IP — hostname (example.com и т.д.), разрешаем
+            pass
         return True
     except (ValueError, ipaddress.AddressValueError):
         return False

@@ -4,7 +4,9 @@
 
 import pytest
 import responses
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
+
+from langchain_core.messages import AIMessage
 
 from agent.agent import process_query
 
@@ -43,21 +45,17 @@ def test_crypto_routing():
 
 def test_agent_returns_string(tmp_memory, mocker):
     """process_query возвращает строку (с моком LLM)."""
-    mock_llm = MagicMock()
-    mock_response = MagicMock()
-    mock_response.content = "Ответ агента"
-    mock_response.tool_calls = []
-    mock_llm.invoke.return_value = mock_response
+    mock_response = AIMessage(content="Ответ агента")
 
-    def mock_create_react_agent(model, tools):
+    def mock_create_agent(model, tools):
         def invoke(inputs):
             return {"messages": [mock_response]}
         agent = MagicMock()
         agent.invoke = invoke
         return agent
 
-    mocker.patch("agent.agent.get_llm", return_value=mock_llm)
-    mocker.patch("agent.agent.create_react_agent", side_effect=mock_create_react_agent)
+    mocker.patch("agent.agent.get_llm", return_value=MagicMock())
+    mocker.patch("agent.agent.create_agent", side_effect=mock_create_agent)
 
     answer = process_query("Привет")
     assert answer == "Ответ агента"

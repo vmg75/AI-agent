@@ -7,12 +7,14 @@ import subprocess
 from typing import Any
 
 import requests
-from ddgs import DDGS
+try:
+    from ddgs import DDGS
+except ModuleNotFoundError:
+    from duckduckgo_search import DDGS
 from langchain_core.tools import tool
 
 from agent.config import (
     HTTP_MAX_BYTES,
-    HTTP_MAX_REDIRECTS,
     HTTP_TIMEOUT,
     TERMINAL_MAX_OUTPUT_CHARS,
     TERMINAL_TIMEOUT,
@@ -78,7 +80,6 @@ def http_request(
             data=body,
             timeout=HTTP_TIMEOUT,
             allow_redirects=True,
-            max_redirects=HTTP_MAX_REDIRECTS,
             stream=True,
         )
         content = b""
